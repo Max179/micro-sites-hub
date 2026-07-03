@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ============ 页面标题占位符 ============ -->
+  <!-- 自动化任务将 {{SITE_TITLE}} 替换为实际站点/工具名称 -->
+  <title>{{SITE_TITLE}}</title>
+
+  <!-- ============ SEO 元信息占位符 ============ -->
+  <!-- {{META_DESCRIPTION}}:页面描述,营销语气概述工具价值 -->
+  <meta name="description" content="{{META_DESCRIPTION}}">
+  <!-- {{KEYWORDS}}:关键词,逗号分隔,用于 SEO -->
+  <meta name="keywords" content="{{KEYWORDS}}">
+  <!-- {{CANONICAL_URL}}:规范链接,防止重复内容 -->
+  <link rel="canonical" href="{{CANONICAL_URL}}">
+
+  <!-- Open Graph / 社交分享元信息(复用上述占位符) -->
+  <meta property="og:title" content="{{SITE_TITLE}}">
+  <meta property="og:description" content="{{META_DESCRIPTION}}">
+  <meta property="og:url" content="{{CANONICAL_URL}}">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- ============ JSON-LD 结构化数据占位 ============ -->
+  <!-- 此处为基础占位,运行时由 seo.js 根据 setupSEO() 参数动态生成完整结构化数据 -->
+  <script type="application/ld+json" id="ld-json-block">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "{{SITE_TITLE}}",
+    "description": "{{META_DESCRIPTION}}",
+    "url": "{{CANONICAL_URL}}",
+    "applicationCategory": "UtilitiesApplication"
+  }
+  </script>
+
+  <!-- ============ 共享基础样式 ============ -->
+  <link rel="stylesheet" href="../shared/base.css">
+
+  <!-- ============ 模板局部样式(补充 base.css) ============ -->
+  <style>
+    /* 通用容器:移动优先,移动端全宽,桌面端最大 800px 居中 */
+    .container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
+
+    /* 广告位默认隐藏,由 ads.js 在启用时控制显示 */
+    .ad-slot {
+      display: none;
+      margin: 16px 0;
+      min-height: 90px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+
+    /* 侧边广告位:固定定位,仅在桌面宽屏由 ads.js 显示 */
+    #ad-sidebar {
+      position: fixed;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 160px;
+      z-index: 90;
+    }
+
+    /* ============ 顶部导航栏 ============ */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #eee;
+    }
+    .site-header .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .site-header .logo {
+      font-weight: 700;
+      font-size: 18px;
+      color: #1a1a1a;
+      text-decoration: none;
+    }
+    .site-header .nav-links {
+      display: flex;
+      gap: 18px;
+    }
+    .site-header .nav-links a {
+      color: #555;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .site-header .nav-links a:hover {
+      color: #111;
+    }
+
+    /* ============ Hero 区域 ============ */
+    .hero {
+      text-align: center;
+      padding: 48px 16px 40px;
+    }
+    .hero h1 {
+      font-size: 28px;
+      margin: 0 0 12px;
+      color: #1a1a1a;
+      line-height: 1.3;
+    }
+    .hero .hero-desc {
+      font-size: 16px;
+      color: #666;
+      margin: 0 auto 24px;
+      max-width: 600px;
+      line-height: 1.7;
+    }
+    .hero .hero-cta {
+      font-size: 16px;
+      padding: 12px 32px;
+    }
+
+    /* ============ 工具核心区域 ============ */
+    .tool-section {
+      padding: 24px 16px 40px;
+    }
+    .tool-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .tool-input-area {
+      margin-bottom: 16px;
+    }
+    /* 输入控件兜底样式(base.css 未覆盖时生效) */
+    .tool-input-area input,
+    .tool-input-area textarea,
+    .tool-input-area select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .tool-input-area textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .tool-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .tool-output {
+      margin-top: 20px;
+      padding: 16px;
+      background: #f9f9f9;
+      border: 1px dashed #e0e0e0;
+      border-radius: 8px;
+      min-height: 60px;
+      word-break: break-word;
+      line-height: 1.6;
+    }
+    .tool-output:empty::before {
+      content: '执行结果将显示在这里';
+      color: #aaa;
+    }
+    .tool-example {
+      margin-top: 24px;
+      padding: 16px;
+      background: #fafafa;
+      border-left: 3px solid #ccc;
+      border-radius: 4px;
+    }
+    .tool-example h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #555;
+    }
+
+    /* ============ 特性卡片 ============ */
+    .features {
+      padding: 40px 16px;
+    }
+    .features h2 {
+      text-align: center;
+      font-size: 24px;
+      margin: 0 0 24px;
+      color: #1a1a1a;
+    }
+    .features-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+    }
+
+    /* ============ FAQ ============ */
+    .faq {
+      padding: 40px 16px;
+    }
+    .faq h2 {
+      text-align: center;
+      font-size: 24px;
+      margin: 0 0 24px;
+      color: #1a1a1a;
+    }
+    .faq details {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      background: #fff;
+    }
+    .faq summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: #1a1a1a;
+      list-style: none;
+    }
+    .faq summary::-webkit-details-marker {
+      display: none;
+    }
+    .faq summary::before {
+      content: '+ ';
+      color: #888;
+    }
+    .faq details[open] summary::before {
+      content: '− ';
+    }
+    .faq details[open] summary {
+      margin-bottom: 8px;
+    }
+
+    /* ============ 页脚 ============ */
+    .site-footer {
+      border-top: 1px solid #eee;
+      padding: 24px 16px;
+      text-align: center;
+      color: #999;
+      font-size: 13px;
+    }
+
+    /* ============ 桌面端响应式 ============ */
+    @media (min-width: 768px) {
+      .hero h1 {
+        font-size: 36px;
+      }
+      .hero .hero-desc {
+        font-size: 18px;
+      }
+      .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+
+  <!-- ============ 共享脚本:SEO / 统计 / 广告 ============ -->
+  <!-- 使用 defer 延迟加载,在文档解析完成后按顺序执行 -->
+  <script src="../shared/seo.js" defer></script>
+  <script src="../shared/analytics.js" defer></script>
+  <script src="../shared/ads.js" defer></script>
+</head>
+<body>
+
+  <!-- ============ 顶部导航栏 ============ -->
+  <!-- logo 占位 {{SITE_TITLE}},导航链接:首页 / 关于 -->
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="/">{{SITE_TITLE}}</a>
+      <div class="nav-links">
+        <a href="/">首页</a>
+        <a href="/about">关于</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ============ 广告位:Header(默认隐藏,由 ads.js 控制显示) ============ -->
+  <div id="ad-header" class="ad-slot" data-ad-slot="header"></div>
+
+  <!-- ============ Hero 区域 ============ -->
+  <!-- {{TOOL_HEADING}}:工具主标题,突出工具核心价值 -->
+  <!-- {{TOOL_DESCRIPTION}}:营销语气描述,激发用户使用意愿 -->
+  <section class="hero container">
+    <h1>{{TOOL_HEADING}}</h1>
+    <p class="hero-desc">{{TOOL_DESCRIPTION}}</p>
+    <button class="btn hero-cta" type="button" data-track="cta_hero_click">开始使用</button>
+  </section>
+
+  <!-- ============ 工具核心区域 ============ -->
+  <section class="tool-section">
+    <div class="tool-card container">
+      <!-- {{TOOL_INPUT_HTML}}:工具输入区 HTML 注入点,可注入 input/textarea/select 等表单元素 -->
+      <div class="tool-input-area">
+        {{TOOL_INPUT_HTML}}
+      </div>
+
+      <!-- 工具操作按钮:点击触发 executeTool() -->
+      <div class="tool-actions">
+        <button class="btn" type="button" data-track="tool_execute_click">执行</button>
+      </div>
+
+      <!-- 工具输出区:executeTool() 将结果渲染到此容器 -->
+      <div id="tool-output" class="tool-output" aria-live="polite"></div>
+
+      <!-- {{TOOL_EXAMPLE}}:使用示例,展示一个典型场景的输入与输出 -->
+      <div class="tool-example">
+        <h3>使用示例</h3>
+        {{TOOL_EXAMPLE}}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 广告位:正文中部(默认隐藏,由 ads.js 控制显示) ============ -->
+  <div id="ad-incontent" class="ad-slot container" data-ad-slot="incontent"></div>
+
+  <!-- ============ 特性介绍区 ============ -->
+  <!-- 3 个 .card 卡片,标题与描述由占位符填充,样式复用 base.css -->
+  <section class="features container">
+    <h2>为什么选择我们</h2>
+    <div class="features-grid">
+      <!-- {{FEATURE_1_TITLE}} / {{FEATURE_1_DESC}}:第一个特性卡片 -->
+      <div class="card">
+        <h3>{{FEATURE_1_TITLE}}</h3>
+        <p>{{FEATURE_1_DESC}}</p>
+      </div>
+      <!-- {{FEATURE_2_TITLE}} / {{FEATURE_2_DESC}}:第二个特性卡片 -->
+      <div class="card">
+        <h3>{{FEATURE_2_TITLE}}</h3>
+        <p>{{FEATURE_2_DESC}}</p>
+      </div>
+      <!-- {{FEATURE_3_TITLE}} / {{FEATURE_3_DESC}}:第三个特性卡片 -->
+      <div class="card">
+        <h3>{{FEATURE_3_TITLE}}</h3>
+        <p>{{FEATURE_3_DESC}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ 区域 ============ -->
+  <!-- {{FAQ_ITEMS}}:常见问题列表,自动化任务注入多个 <details><summary>问</summary><p>答</p></details> 块 -->
+  <section class="faq container">
+    <h2>常见问题</h2>
+    {{FAQ_ITEMS}}
+  </section>
+
+  <!-- ============ 页脚 ============ -->
+  <!-- {{SITE_TITLE}}:站点名称;{{YEAR}}:当前年份(如 2026) -->
+  <footer class="site-footer">
+    <p>&copy; {{YEAR}} {{SITE_TITLE}}. 保留所有权利。</p>
+  </footer>
+
+  <!-- ============ 广告位:侧边栏(默认隐藏,position:fixed,由 ads.js 控制显示) ============ -->
+  <div id="ad-sidebar" class="ad-slot" data-ad-slot="sidebar"></div>
+
+  <!-- ============ 工具核心逻辑注入点 ============ -->
+  <!-- 自动化任务将下方 {{TOOL_LOGIC}} 替换为完整 JS 代码 -->
+  <!-- 注入的代码需定义全局函数 executeTool():读取工具输入并渲染结果到 #tool-output -->
+  <script>
+    {{TOOL_LOGIC}}
+  </script>
+
+  <!-- ============ 站点初始化逻辑 ============ -->
+  <script>
+    // 等待 DOM 解析完成与 defer 脚本(seo.js / analytics.js / ads.js)加载完毕
+    document.addEventListener('DOMContentLoaded', function () {
+      // 默认配置:在 config.json 加载失败时使用
+      var defaultConfig = {
+        gaId: '',
+        siteName: '{{SITE_TITLE}}',
+        adsEnabled: false
+      };
+
+      // 从 ../shared/config.json 读取共享配置,失败则回退到默认值
+      fetch('../shared/config.json')
+        .then(function (res) { return res.json(); })
+        .then(function (config) { bootstrap(config); })
+        .catch(function () { bootstrap(defaultConfig); });
+
+      // 绑定 Hero CTA 按钮:点击平滑滚动到工具区域
+      var heroCta = document.querySelector('[data-track="cta_hero_click"]');
+      if (heroCta) {
+        heroCta.addEventListener('click', function () {
+          var toolSection = document.querySelector('.tool-section');
+          if (toolSection) {
+            toolSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+
+      // 绑定工具执行按钮:点击调用 executeTool()
+      var execBtn = document.querySelector('[data-track="tool_execute_click"]');
+      if (execBtn) {
+        execBtn.addEventListener('click', function () {
+          if (typeof window.executeTool === 'function') {
+            window.executeTool();
+          } else {
+            var output = document.getElementById('tool-output');
+            if (output) {
+              output.innerHTML = '<p style="color:#c00;">工具逻辑尚未加载(缺少 executeTool 实现)。</p>';
+            }
+          }
+        });
+      }
+    });
+
+    // 站点引导初始化:SEO / 统计 / 广告
+    function bootstrap(config) {
+      config = config || {};
+
+      // SEO 初始化(type 标识为工具站)
+      if (window.SiteSEO && typeof window.SiteSEO.setupSEO === 'function') {
+        window.SiteSEO.setupSEO({
+          title: '{{SITE_TITLE}}',
+          description: '{{META_DESCRIPTION}}',
+          keywords: '{{KEYWORDS}}',
+          url: '{{CANONICAL_URL}}',
+          type: 'tool'
+        });
+      }
+
+      // 统计初始化:传入 GA ID
+      if (window.SiteAnalytics && typeof window.SiteAnalytics.initAnalytics === 'function') {
+        window.SiteAnalytics.initAnalytics(config.gaId || '');
+      }
+
+      // 广告初始化:传入完整配置
+      if (window.SiteAds && typeof window.SiteAds.initAds === 'function') {
+        window.SiteAds.initAds(config);
+      }
+    }
+  </script>
+</body>
+</html>

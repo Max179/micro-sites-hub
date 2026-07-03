@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 占位符:{{SITE_TITLE}} 站点标题,用于 <title>、logo、页脚版权等 -->
+  <title>{{SITE_TITLE}}</title>
+
+  <!-- 占位符:{{META_DESCRIPTION}} 页面 meta 描述,用于搜索引擎结果摘要,客观陈述 -->
+  <meta name="description" content="{{META_DESCRIPTION}}">
+
+  <!-- 占位符:{{KEYWORDS}} 关键词,逗号分隔 -->
+  <meta name="keywords" content="{{KEYWORDS}}">
+
+  <!-- 占位符:{{CANONICAL_URL}} 规范链接,用于声明页面唯一 URL -->
+  <link rel="canonical" href="{{CANONICAL_URL}}">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{SITE_TITLE}}">
+  <meta property="og:description" content="{{META_DESCRIPTION}}">
+  <meta property="og:url" content="{{CANONICAL_URL}}">
+
+  <!-- 基础样式(提供 .card 等通用样式) -->
+  <link rel="stylesheet" href="../shared/base.css">
+
+  <!-- 页面局部样式:移动优先,内容列表在移动端单列、桌面端双列(grid) -->
+  <style>
+    body { margin: 0; }
+    .layout { max-width: 1100px; margin: 0 auto; padding: 0 1rem; }
+
+    /* 导航栏 */
+    header.nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1rem; border-bottom: 1px solid #eee;
+    }
+    header.nav .logo { font-weight: 700; }
+    header.nav nav a { margin-left: 1rem; text-decoration: none; color: inherit; }
+    header.nav nav a:hover { text-decoration: underline; }
+
+    /* 广告位:默认隐藏,由 SiteAds 控制显隐 */
+    .ad-slot { display: none; }
+
+    section { padding: 1rem 0; }
+
+    /* Hero 区 */
+    .hero h1 { margin: 0 0 0.5rem; }
+    .hero p { margin: 0; color: #555; }
+
+    /* 搜索/筛选区 */
+    .toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .toolbar input[type="search"] { flex: 1; min-width: 200px; }
+    .toolbar select { min-width: 140px; }
+
+    /* 内容列表:移动端单列,桌面端双列 */
+    #content-list { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 768px) {
+      #content-list { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* 分页按钮 */
+    .load-more { display: block; margin: 1.5rem auto; padding: 0.6rem 1.4rem; cursor: pointer; }
+
+    /* 页脚 */
+    footer { padding: 1.5rem 1rem; border-top: 1px solid #eee; text-align: center; color: #666; }
+  </style>
+
+  <!-- SEO / 分析 / 广告 脚本 -->
+  <script src="../shared/seo.js"></script>
+  <script src="../shared/analytics.js"></script>
+  <script src="../shared/ads.js"></script>
+</head>
+<body>
+  <!-- 1. 导航栏:logo 占位 {{SITE_TITLE}},导航链接(首页/分类/关于) -->
+  <header class="nav">
+    <div class="logo">{{SITE_TITLE}}</div>
+    <nav>
+      <a href="#hero">首页</a>
+      <a href="#filter-section">分类</a>
+      <a href="#about">关于</a>
+    </nav>
+  </header>
+
+  <!-- 2. 广告位:header,默认隐藏 -->
+  <div id="ad-header" class="ad-slot" data-slot="header"></div>
+
+  <main class="layout">
+    <!-- 3. Hero/标题区 -->
+    <section class="hero" id="hero">
+      <!-- 占位符:{{INFO_HEADING}} 资讯标题 -->
+      <h1>{{INFO_HEADING}}</h1>
+      <!-- 占位符:{{INFO_DESCRIPTION}} 资讯简介,客观语气,说明本站提供什么信息 -->
+      <p>{{INFO_DESCRIPTION}}</p>
+    </section>
+
+    <!-- 4. 搜索/筛选区 -->
+    <section class="toolbar" id="filter-section">
+      <!-- 搜索框,带埋点属性 data-track="search_use" -->
+      <input type="search" id="search" placeholder="搜索资讯标题或内容..." data-track="search_use" autocomplete="off">
+      <!-- 分类筛选,占位符:{{CATEGORY_OPTIONS}} 由自动化注入 <option> 列表 -->
+      <select id="filter" data-track="filter_use">
+        <option value="">全部分类</option>
+        {{CATEGORY_OPTIONS}}
+      </select>
+    </section>
+
+    <!-- 5. 内容列表区 -->
+    <section class="content">
+      <!-- 容器 div#content-list:自动化将向其注入至少 20 条 .card -->
+      <div id="content-list">
+        <!--
+          占位符:{{DATA_ENTRIES}} 由自动化任务注入,每条为 .card 结构示例:
+          <article class="card" data-category="分类A" data-title="条目标题">
+            <h3 class="card-title">条目标题</h3>
+            <p class="card-summary">条目摘要,客观陈述事实。</p>
+            <div class="card-meta">
+              <span class="card-tag">标签</span>
+              <time class="card-date" datetime="YYYY-MM-DD">YYYY-MM-DD</time>
+            </div>
+          </article>
+          说明:每条 .card 需包含 data-category(分类标识)与 data-title(条目标题),
+          便于搜索筛选。至少 20 条初始数据由自动化注入。
+        -->
+        {{DATA_ENTRIES}}
+      </div>
+    </section>
+
+    <!-- 6. 广告位:incontent,默认隐藏 -->
+    <div id="ad-incontent" class="ad-slot" data-slot="incontent"></div>
+
+    <!-- 7. 分页区:加载更多按钮,带埋点属性 data-track="load_more_click" -->
+    <section class="pagination">
+      <button class="load-more" data-track="load_more_click">加载更多</button>
+    </section>
+  </main>
+
+  <!-- 8. 页脚:版权信息,占位符 {{SITE_TITLE}} 与 {{YEAR}} -->
+  <footer id="about">
+    <p>&copy; {{YEAR}} {{SITE_TITLE}}. 保留所有权利。</p>
+  </footer>
+
+  <!-- 9. 广告位:sidebar,默认隐藏 -->
+  <div id="ad-sidebar" class="ad-slot" data-slot="sidebar"></div>
+
+  <script>
+    // 初始化逻辑
+    (function () {
+      // 调用 SiteSEO 设置 SEO 信息(占位符由自动化替换为实际值)
+      if (window.SiteSEO && typeof window.SiteSEO.setupSEO === 'function') {
+        window.SiteSEO.setupSEO({
+          title: '{{SITE_TITLE}}',
+          description: '{{META_DESCRIPTION}}',
+          keywords: '{{KEYWORDS}}',
+          url: '{{CANONICAL_URL}}',
+          type: 'info'
+        });
+      }
+
+      // 默认配置:fetch 失败时使用
+      var DEFAULT_CONFIG = {
+        siteTitle: '{{SITE_TITLE}}',
+        gaId: '',
+        ads: {}
+      };
+
+      // 从 ../shared/config.json 读取配置,失败则用默认值
+      fetch('../shared/config.json', { cache: 'no-cache' })
+        .then(function (res) {
+          if (!res.ok) throw new Error('config fetch failed');
+          return res.json();
+        })
+        .catch(function () { return DEFAULT_CONFIG; })
+        .then(function (config) {
+          config = config || DEFAULT_CONFIG;
+          // 初始化分析统计
+          if (window.SiteAnalytics && typeof window.SiteAnalytics.initAnalytics === 'function') {
+            window.SiteAnalytics.initAnalytics(config.gaId);
+          }
+          // 初始化广告
+          if (window.SiteAds && typeof window.SiteAds.initAds === 'function') {
+            window.SiteAds.initAds(config);
+          }
+        });
+
+      // 搜索筛选功能:监听 input#search 的 input 事件与 select#filter 的 change 事件
+      var searchInput = document.getElementById('search');
+      var filterSelect = document.getElementById('filter');
+      var contentList = document.getElementById('content-list');
+
+      function filterCards() {
+        var query = (searchInput && searchInput.value || '').trim().toLowerCase();
+        var category = filterSelect ? filterSelect.value : '';
+        var cards = contentList.querySelectorAll('.card');
+        cards.forEach(function (card) {
+          var title = (card.getAttribute('data-title') || '').toLowerCase();
+          var cardCategory = card.getAttribute('data-category') || '';
+          var text = (card.textContent || '').toLowerCase();
+          var matchSearch = !query || title.indexOf(query) !== -1 || text.indexOf(query) !== -1;
+          var matchCategory = !category || cardCategory === category;
+          card.style.display = (matchSearch && matchCategory) ? '' : 'none';
+        });
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('input', filterCards);
+      }
+      if (filterSelect) {
+        filterSelect.addEventListener('change', filterCards);
+      }
+    })();
+  </script>
+</body>
+</html>

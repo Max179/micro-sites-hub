@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===================== SEO 占位符 ===================== -->
+  <!-- 占位符 {{SITE_TITLE}}:站点/页面标题,用于 <title> 与 og:title -->
+  <title>{{SITE_TITLE}}</title>
+  <!-- 占位符 {{META_DESCRIPTION}}:页面描述,用于 meta description 与 og:description -->
+  <meta name="description" content="{{META_DESCRIPTION}}">
+  <!-- 占位符 {{KEYWORDS}}:关键词,逗号分隔 -->
+  <meta name="keywords" content="{{KEYWORDS}}">
+  <!-- 占位符 {{CANONICAL_URL}}:页面规范链接,用于 canonical 与 og:url -->
+  <link rel="canonical" href="{{CANONICAL_URL}}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{SITE_TITLE}}">
+  <meta property="og:description" content="{{META_DESCRIPTION}}">
+  <meta property="og:url" content="{{CANONICAL_URL}}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- 全局基础样式 -->
+  <link rel="stylesheet" href="../shared/base.css">
+  <!-- 全局功能脚本:SEO、统计、广告 -->
+  <script src="../shared/seo.js"></script>
+  <script src="../shared/analytics.js"></script>
+  <script src="../shared/ads.js"></script>
+
+  <style>
+    /* ====== 计算站页面专属样式:移动优先响应式 ====== */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: #1a1a1a;
+      background: #f7f8fa;
+      line-height: 1.6;
+    }
+
+    /* 顶部导航栏 */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #ffffff;
+      border-bottom: 1px solid #ebedf0;
+    }
+    .nav-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 16px; }
+    .nav-links a {
+      color: #4a5568;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .nav-links a:hover { color: #2563eb; }
+
+    /* 广告位:默认隐藏,由 SiteAds.initAds 决定是否展示 */
+    .ad-slot {
+      display: none;
+      width: 100%;
+      background: #fff;
+      border: 1px dashed #d1d5db;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 0.8rem;
+      padding: 8px;
+    }
+    #ad-incontent { margin: 24px auto; max-width: 700px; }
+    #ad-sidebar {
+      position: fixed;
+      right: 16px;
+      top: 120px;
+      width: 200px;
+      max-width: 30vw;
+    }
+
+    /* 容器:移动端全宽,桌面端最大 700px 居中 */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+    section { padding: 32px 16px; }
+
+    /* Hero 区 */
+    .hero {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      text-align: center;
+      padding: 48px 16px;
+    }
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .hero p {
+      margin: 0 auto 24px;
+      max-width: 600px;
+      font-size: 1rem;
+      opacity: 0.95;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 12px 28px;
+      background: #ffffff;
+      color: #2563eb;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s ease;
+    }
+    .cta-button:hover { transform: translateY(-1px); }
+
+    /* 计算器核心区 */
+    .calc-section { background: #ffffff; }
+    .calc-section h2 {
+      margin: 0 0 16px;
+      font-size: 1.25rem;
+      text-align: center;
+    }
+    .calc-form {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; }
+    /* 表单元素:优先采用 base.css 样式,以下为基础兜底 */
+    .form-group label {
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #374151;
+    }
+    .form-group input,
+    .form-group select {
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: #fff;
+      width: 100%;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .calc-button {
+      width: 100%;
+      padding: 14px;
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .calc-button:hover { background: #1d4ed8; }
+
+    /* 结果展示区:大字号(2rem)突出显示 */
+    .result-box {
+      margin-top: 24px;
+      padding: 24px;
+      background: #f0f7ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .result-label {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    #calc-result {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      word-break: break-word;
+      line-height: 1.3;
+    }
+    /* 详细说明区:解释计算公式与过程 */
+    .explanation-box {
+      margin-top: 16px;
+      padding: 16px 20px;
+      background: #fafafa;
+      border-left: 3px solid #2563eb;
+      font-size: 0.95rem;
+      color: #374151;
+      line-height: 1.7;
+    }
+
+    /* 使用说明区 */
+    .steps-section h2,
+    .faq-section h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 1.5rem;
+    }
+    .steps-list {
+      list-style: none;
+      counter-reset: step;
+      padding: 0;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .steps-list li {
+      counter-increment: step;
+      position: relative;
+      padding: 12px 0 12px 48px;
+      border-bottom: 1px solid #ebedf0;
+      color: #374151;
+    }
+    .steps-list li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 12px;
+      width: 32px;
+      height: 32px;
+      background: #2563eb;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* FAQ 区:details/summary 折叠 */
+    details {
+      max-width: 700px;
+      margin: 12px auto;
+      background: #fff;
+      border: 1px solid #ebedf0;
+      border-radius: 8px;
+      padding: 0 16px;
+      overflow: hidden;
+    }
+    summary {
+      padding: 14px 0;
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+      color: #1a1a1a;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: "+";
+      float: right;
+      color: #2563eb;
+      font-size: 1.25rem;
+      line-height: 1.2;
+    }
+    details[open] summary::after { content: "−"; }
+    details p {
+      margin: 0 0 14px;
+      color: #4a5568;
+      line-height: 1.7;
+    }
+
+    /* 页脚 */
+    footer {
+      background: #1a1a1a;
+      color: #9ca3af;
+      text-align: center;
+      padding: 24px 16px;
+      font-size: 0.85rem;
+    }
+    footer a { color: #d1d5db; text-decoration: none; }
+
+    /* 桌面端响应式微调 */
+    @media (min-width: 768px) {
+      .hero h1 { font-size: 2.5rem; }
+      .hero p { font-size: 1.125rem; }
+      .container { padding: 32px 16px; }
+      #calc-result { font-size: 2.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====== 1. 顶部导航栏 ====== -->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <!-- logo 占位符 {{SITE_TITLE}}:站点名称 -->
+      <a href="/" class="logo">{{SITE_TITLE}}</a>
+      <nav class="nav-links">
+        <a href="/">首页</a>
+        <a href="/about">关于</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ====== 2. 顶部广告位(默认隐藏)====== -->
+  <div id="ad-header" class="ad-slot">广告位 header</div>
+
+  <!-- ====== 3. Hero 区:计算器主题与用途 ====== -->
+  <section class="hero">
+    <!-- h1 占位符 {{CALC_HEADING}}:计算器主标题 -->
+    <h1>{{CALC_HEADING}}</h1>
+    <!-- 副标题占位符 {{CALC_DESCRIPTION}}:计算器用途客观说明 -->
+    <p>{{CALC_DESCRIPTION}}</p>
+    <!-- CTA 按钮:点击平滑滚动到计算器区域 -->
+    <a href="#calc-section" class="cta-button" data-track="cta_hero_click">开始计算</a>
+  </section>
+
+  <!-- ====== 4. 计算器核心区 ====== -->
+  <section id="calc-section" class="calc-section">
+    <div class="container">
+      <h2>在线计算</h2>
+
+      <!-- 表单区:占位符 {{CALC_INPUTS}},可注入多个 input/select,每个带 label(推荐结构:<div class="form-group"><label>...</label><input ...></div>) -->
+      <form id="calc-form" class="calc-form" onsubmit="return false;">
+        {{CALC_INPUTS}}
+
+        <!-- 计算按钮:触发 calculate() 函数 -->
+        <button type="button" class="calc-button" data-track="calc_execute_click" onclick="calculate()">计算</button>
+      </form>
+
+      <!-- 结果展示区:大字号突出显示计算结果 -->
+      <div class="result-box">
+        <div class="result-label">计算结果</div>
+        <div id="calc-result">—</div>
+      </div>
+
+      <!-- 详细说明区:占位符 {{CALC_EXPLANATION}},解释计算公式与推导过程 -->
+      <div class="explanation-box">
+        <div id="calc-explanation">{{CALC_EXPLANATION}}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 5. 内容中部广告位(默认隐藏)====== -->
+  <div id="ad-incontent" class="ad-slot">广告位 incontent</div>
+
+  <!-- ====== 6. 使用说明区:3-4 步操作 ====== -->
+  <section class="steps-section">
+    <div class="container">
+      <h2>使用步骤</h2>
+      <!-- 步骤列表占位符 {{STEPS_HTML}}:每项为 <li>步骤说明</li> -->
+      <ol class="steps-list">
+        {{STEPS_HTML}}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ====== 7. FAQ 区域:details/summary 折叠 ====== -->
+  <section class="faq-section">
+    <div class="container">
+      <h2>常见问题</h2>
+      <!-- FAQ 占位符 {{FAQ_ITEMS}}:每项为 <details><summary>问题</summary><p>答案</p></details> -->
+      {{FAQ_ITEMS}}
+    </div>
+  </section>
+
+  <!-- ====== 8. 页脚 ====== -->
+  <footer>
+    <!-- 版权占位符 {{YEAR}} 与 {{SITE_TITLE}} -->
+    <p>&copy; {{YEAR}} {{SITE_TITLE}}. 保留所有权利。</p>
+  </footer>
+
+  <!-- ====== 9. 侧边栏广告位(默认隐藏)====== -->
+  <div id="ad-sidebar" class="ad-slot">广告位 sidebar</div>
+
+  <!-- ====== 计算逻辑注入点 ====== -->
+  <!-- 占位符 {{CALC_LOGIC}}:JS 代码注入点,必须定义全局 calculate() 函数,读取表单值,向 #calc-result 输出结果,向 #calc-explanation 输出公式与过程说明 -->
+  <script>
+    {{CALC_LOGIC}}
+  </script>
+
+  <!-- ====== 页面初始化脚本 ====== -->
+  <script>
+    // 默认配置:fetch config.json 失败时回退使用
+    var DEFAULT_CONFIG = {
+      siteName: '{{SITE_TITLE}}',
+      gaId: '',
+      ads: { enabled: false }
+    };
+
+    /**
+     * 读取 ../shared/config.json 配置,失败时回退到 DEFAULT_CONFIG
+     * @param {Function} cb 回调,接收合并后的配置
+     */
+    function loadConfig(cb) {
+      fetch('../shared/config.json', { cache: 'no-store' })
+        .then(function (res) { return res.ok ? res.json() : Promise.reject(); })
+        .then(function (json) { cb(Object.assign({}, DEFAULT_CONFIG, json)); })
+        .catch(function () { cb(DEFAULT_CONFIG); });
+    }
+
+    /**
+     * 绑定 Hero CTA 按钮:点击平滑滚动到计算器区域
+     */
+    function bindCtaScroll() {
+      var cta = document.querySelector('[data-track="cta_hero_click"]');
+      var target = document.getElementById('calc-section');
+      if (cta && target) {
+        cta.addEventListener('click', function (e) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    }
+
+    /**
+     * 页面初始化入口
+     */
+    function init() {
+      bindCtaScroll();
+
+      loadConfig(function (config) {
+        // 调用 SiteSEO 设置 SEO 元信息
+        if (window.SiteSEO && typeof SiteSEO.setupSEO === 'function') {
+          SiteSEO.setupSEO({
+            title: '{{SITE_TITLE}}',
+            description: '{{META_DESCRIPTION}}',
+            keywords: '{{KEYWORDS}}',
+            url: '{{CANONICAL_URL}}',
+            type: 'calculator'
+          });
+        }
+
+        // 调用 SiteAnalytics 初始化统计
+        if (window.SiteAnalytics && typeof SiteAnalytics.initAnalytics === 'function') {
+          SiteAnalytics.initAnalytics(config.gaId);
+        }
+
+        // 调用 SiteAds 初始化广告(由其内部控制各广告位的显示)
+        if (window.SiteAds && typeof SiteAds.initAds === 'function') {
+          SiteAds.initAds(config);
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+
+</body>
+</html>
