@@ -1,76 +1,75 @@
-# Promotion Copy - 20260703
+# Promotion Copy - 2026-07-03
 
 **Site:** Caffeine Half-Life Calculator
-**URL:** https://Max179.github.io/site-20260703-caffeine-half-life-calculator/
+**URL:** https://Max179.github.io/site-20260703-caffeine-half-life-calculator
+**Repo:** https://github.com/Max179/site-20260703-caffeine-half-life-calculator
 
 ---
 
-## Reddit (r/coffee, r/sleep, r/productivity)
+## 1. Reddit (r/coffee, r/sleep, r/productivity)
 
-**Title:** I built a free caffeine half-life calculator so you know when it's safe to sleep after coffee
+**Title:** I built a free caffeine half-life calculator so I could finally figure out when to stop drinking coffee
 
 **Body:**
 
-Hey everyone,
+I love coffee, but for years I'd drink a cup at 3pm, lie awake at 11pm, and wonder why. The "don't drink coffee after 2pm" rule is everywhere, but it's way too blunt - a 95mg drip coffee and a 200mg pre-workout are very different things, and my metabolism isn't yours.
 
-I kept wrecking my sleep with afternoon coffee without realizing how much caffeine was still in my system at bedtime, so I built a simple free tool:
+So I built a small free tool that does the actual math: you enter what you drank (or pick from common drinks), the time you finished it, and it tells you the earliest moment your caffeine drops below the ~25mg level that research links to sleep disruption.
 
-https://Max179.github.io/site-20260703-caffeine-half-life-calculator/
+The science it's based on:
+- Caffeine has an average half-life of ~5 hours (faster in smokers, slower on oral contraceptives)
+- It follows exponential decay: C(t) = C0 * (0.5)^(t / halfLife)
+- ~25mg at bedtime is roughly where sleep quality starts dropping for most people
 
-You enter:
-- What you drank (coffee, espresso, energy drink, tea) and the mg
-- The time you had it
-- Your planned bedtime
-- Your metabolism (fast / average / slow, ~3 / 5 / 7 h half-life)
+It shows you the exact safe-to-sleep time and how much caffeine is still in you right now. No signup, no ads in your face, works on mobile.
 
-It tells you how many mg are left at bedtime, whether that's likely to disrupt sleep, and the exact clock time caffeine drops below the sleep-safe 50 mg threshold.
+Try it: https://Max179.github.io/site-20260703-caffeine-half-life-calculator
 
-Useful for anyone who works late, studies, or does shift work. No signup, mobile-friendly.
-
-Would love feedback — anything you'd add? (Considering a "reverse mode": enter bedtime, get the latest safe coffee time.)
+Curious what time you'd need to cut off coffee to sleep at 10pm? For a standard 8oz drip it's around 12:30pm. What's your usual last cup and bedtime?
 
 ---
 
-## X (Twitter)
+## 2. X (Twitter) - under 280 chars
 
-Drink coffee at 4pm and wonder why you can't sleep? Built a free Caffeine Half-Life Calculator — see how many mg are left at your bedtime and the exact time it's safe to sleep.
+Ever wonder if that 3pm coffee will wreck your sleep? Built a free Caffeine Half-Life Calculator - enter your drink + time, get the earliest moment you can sleep without caffeine interfering. ☕💤
+https://Max179.github.io/site-20260703-caffeine-half-life-calculator
 
-https://Max179.github.io/site-20260703-caffeine-half-life-calculator/
-
-#coffee #sleep #caffeine #productivity
-
----
-
-## Indie Hackers
-
-**Title:** Day 1 of building a micro-site a day — today: a caffeine half-life calculator
-
-I'm trying an experiment: ship one lightweight, genuinely useful web tool every day and grow them toward AdSense. No frameworks, no build step — just HTML/CSS/JS deployed to GitHub Pages.
-
-Today's site solves a problem I personally hit: drinking afternoon coffee and then lying awake wondering how much caffeine is still in my system.
-
-https://Max179.github.io/site-20260703-caffeine-half-life-calculator/
-
-It uses the standard exponential decay model (dose x 0.5^(elapsed / half-life)) with a 3 / 5 / 7-hour half-life toggle for fast / average / slow metabolizers, and shows the exact time caffeine drops below the sleep-safe 50 mg threshold.
-
-Tech: vanilla JS, shared SEO / analytics / ads modules I reuse across sites, JSON-LD structured data for Google. The template system took a day to set up; now each site is mostly content plus one calculate() function.
-
-Tomorrow: another small pain point. Open to ideas.
+#caffeine #sleep #coffee #productivity #buildinpublic
 
 ---
 
-## Hacker News (Show HN)
+## 3. Indie Hackers
 
-**Title:** Show HN: Caffeine Half-Life Calculator – when is it safe to sleep after coffee
+**Title:** Day 1 of shipping a micro-site a day for AdSense - today: a caffeine half-life calculator
 
-Hi HN,
+**Body:**
 
-I built a small, dependency-free tool that estimates how much caffeine is still in your body at bedtime and when it drops below the level that tends to disrupt sleep (~50 mg).
+I'm trying an experiment: ship one small, genuinely useful web tool every day, each as its own site, and see if AdSense can make them pay for themselves.
 
-https://Max179.github.io/site-20260703-caffeine-half-life-calculator/
+Today's is a Caffeine Half-Life Calculator. The pain point is personal - I drink coffee late and never know if it'll trash my sleep. Existing advice ("no coffee after 2pm") ignores dose and individual metabolism. So the tool takes your caffeine amount, the time you drank it, your half-life (5h average, 3h if you smoke, longer on oral contraceptives), and a sleep-safe threshold, then computes the exact time caffeine falls below sleep-disrupting levels.
 
-It uses the standard first-order decay model: remaining = dose x 0.5^(elapsed / half-life), with a half-life of ~3 / 5 / 7 hours depending on whether you're a fast / average / slow metabolizer (CYP1A2 genetics). The 5-hour average is the commonly cited population mean.
+Stack: plain HTML/CSS/JS, no build step, deployed on GitHub Pages. Each site shares a small SEO/analytics/ads module so I can reuse infrastructure across all 30+ planned sites. The formula is just exponential decay solved for the threshold.
 
-The motivation: people know "don't drink coffee late" but not where their personal cutoff is. A 95 mg coffee at 4pm leaves ~40 mg at 11pm for an average metabolizer — borderline. For a slow metabolizer it's ~60 mg — likely to hurt sleep.
+Live: https://Max179.github.io/site-20260703-caffeine-half-life-calculator
 
-Pure HTML/CSS/JS on GitHub Pages. Feedback welcome, especially on the half-life ranges and the 50 mg sleep threshold — I pulled those from sleep-research summaries and would appreciate sharper citations.
+What single-purpose tools do you wish existed? Trying to collect pain points for the next few days.
+
+---
+
+## 4. Hacker News (Show HN)
+
+**Title:** Show HN: Caffeine Half-Life Calculator – when can you sleep after coffee
+
+**Body:**
+
+Hi HN, I built a small tool that answers a question I kept googling poorly: if I drink X mg of caffeine at time Y, when is it safe to sleep?
+
+It uses caffeine's exponential decay (average 5h half-life, adjustable for smokers ~3h or oral contraceptives ~7-10h) and solves C(t) = C0 * (0.5)^(t/halfLife) for the sleep-safe threshold (~25mg). You pick a drink or enter a custom mg amount, set the time you finished, and it returns the earliest bedtime that shouldn't be disrupted, plus how much caffeine is still active in you right now.
+
+Nothing fancy - static HTML/JS on GitHub Pages, no tracking beyond GA, no signup. The interesting bit is that the common "no coffee after 2pm" heuristic is wildly off for a 200mg pre-workout vs a 30mg green tea, and most people don't realize caffeine's half-life varies ~3x between individuals.
+
+https://Max179.github.io/site-20260703-caffeine-half-life-calculator
+
+Source: https://github.com/Max179/site-20260703-caffeine-half-life-calculator
+
+Feedback welcome, especially on the threshold default (25mg) and whether to add a "wake up at" reverse mode.
