@@ -1,75 +1,91 @@
-# Promotion Copy - 2026-07-03
+# Promotion Copy - Reading Time Calculator (2026-07-03)
 
-**Site:** Caffeine Half-Life Calculator
-**URL:** https://Max179.github.io/site-20260703-caffeine-half-life-calculator
-**Repo:** https://github.com/Max179/site-20260703-caffeine-half-life-calculator
+## Reddit
 
----
+### r/selfpublish
+**Title:** I built a free reading time calculator — perfect for estimating book/chapter lengths
 
-## 1. Reddit (r/coffee, r/sleep, r/productivity)
+Hey r/selfpublish! I'm a solo dev building one micro-site per day. Today's tool is a simple reading time calculator. Just enter your word count and pick a reading speed to get an instant estimate.
 
-**Title:** I built a free caffeine half-life calculator so I could finally figure out when to stop drinking coffee
+I built this because I noticed a lot of authors struggle with estimating how long their chapters or books will take to read. It also works for audiobook estimates (select 150 wpm).
+
+Free, no sign-up, no ads: https://Max179.github.io/site-20260703-reading-time-calculator
+
+Hope it helps someone! Feedback welcome.
+
+### r/Blogging
+**Title:** Quick tool: Calculate how long it takes to read your blog posts
+
+Writers — ever wonder how long your readers spend on your articles? I made a dead-simple reading time calculator. Drop in your word count, select reading speed, and done.
+
+Useful for:
+- Adding "X min read" to blog posts
+- Estimating newsletter reading time
+- Planning content length
+
+https://Max179.github.io/site-20260703-reading-time-calculator
+
+### r/productivity
+**Title:** Free reading time calculator — plan your reading sessions better
+
+If you're into reading goals or time-blocking, this might help. Enter word count + reading speed → get estimated reading time. Simple but I use it daily now.
+
+https://Max179.github.io/site-20260703-reading-time-calculator
+
+## X (Twitter)
+
+**Tweet 1:**
+Just shipped a free reading time calculator 🚀
+
+Drop in your word count → get instant reading time estimate. Works for articles, books, audiobooks.
+
+No sign-up. No ads. Just works.
+
+https://Max179.github.io/site-20260703-reading-time-calculator
+
+#buildinpublic #indiedev #webdev #writingcommunity
+
+**Tweet 2:**
+Day 1 of building one micro-site per day 💪
+
+Reading Time Calculator — simple, fast, free.
+5 reading speeds from very slow (150 wpm) to speed reader (400 wpm).
+
+https://Max179.github.io/site-20260703-reading-time-calculator
+
+#shipfast #buildinpublic
+
+## Indie Hackers
+
+**Title:** I'm building one micro-site per day — Day 1: Reading Time Calculator
 
 **Body:**
+Hey IH! I'm starting a challenge: one lightweight micro-site per day, all hosted on GitHub Pages, targeting AdSense revenue eventually.
 
-I love coffee, but for years I'd drink a cup at 3pm, lie awake at 11pm, and wonder why. The "don't drink coffee after 2pm" rule is everywhere, but it's way too blunt - a 95mg drip coffee and a 200mg pre-workout are very different things, and my metabolism isn't yours.
+Day 1 is a Reading Time Calculator. Super simple:
+- Enter word count
+- Pick reading speed (150-400 wpm)
+- Get instant reading time estimate
 
-So I built a small free tool that does the actual math: you enter what you drank (or pick from common drinks), the time you finished it, and it tells you the earliest moment your caffeine drops below the ~25mg level that research links to sleep disruption.
+Why this? I found that many people — writers, students, bloggers, audiobook listeners — need a quick way to estimate reading time. Existing tools are either bloated or buried in bigger suites.
 
-The science it's based on:
-- Caffeine has an average half-life of ~5 hours (faster in smokers, slower on oral contraceptives)
-- It follows exponential decay: C(t) = C0 * (0.5)^(t / halfLife)
-- ~25mg at bedtime is roughly where sleep quality starts dropping for most people
+Stack: vanilla HTML/CSS/JS, GitHub Pages, zero dependencies.
 
-It shows you the exact safe-to-sleep time and how much caffeine is still in you right now. No signup, no ads in your face, works on mobile.
+Would love feedback on the concept and the tool itself:
+https://Max179.github.io/site-20260703-reading-time-calculator
 
-Try it: https://Max179.github.io/site-20260703-caffeine-half-life-calculator
+## Hacker News
 
-Curious what time you'd need to cut off coffee to sleep at 10pm? For a standard 8oz drip it's around 12:30pm. What's your usual last cup and bedtime?
-
----
-
-## 2. X (Twitter) - under 280 chars
-
-Ever wonder if that 3pm coffee will wreck your sleep? Built a free Caffeine Half-Life Calculator - enter your drink + time, get the earliest moment you can sleep without caffeine interfering. ☕💤
-https://Max179.github.io/site-20260703-caffeine-half-life-calculator
-
-#caffeine #sleep #coffee #productivity #buildinpublic
-
----
-
-## 3. Indie Hackers
-
-**Title:** Day 1 of shipping a micro-site a day for AdSense - today: a caffeine half-life calculator
+**Title:** Show HN: Reading Time Calculator — a free, no-signup tool to estimate reading time
 
 **Body:**
+I started a challenge of building one micro-site per day. This is Day 1.
 
-I'm trying an experiment: ship one small, genuinely useful web tool every day, each as its own site, and see if AdSense can make them pay for themselves.
+Reading Time Calculator: enter your word count, select your reading speed, and get an instant estimate. Supports 5 speed tiers from 150 wpm (audiobook/learner) to 400 wpm (speed reader).
 
-Today's is a Caffeine Half-Life Calculator. The pain point is personal - I drink coffee late and never know if it'll trash my sleep. Existing advice ("no coffee after 2pm") ignores dose and individual metabolism. So the tool takes your caffeine amount, the time you drank it, your half-life (5h average, 3h if you smoke, longer on oral contraceptives), and a sleep-safe threshold, then computes the exact time caffeine falls below sleep-disrupting levels.
+Built with vanilla HTML/CSS/JS. No frameworks, no tracking, no ads. Hosted on GitHub Pages.
 
-Stack: plain HTML/CSS/JS, no build step, deployed on GitHub Pages. Each site shares a small SEO/analytics/ads module so I can reuse infrastructure across all 30+ planned sites. The formula is just exponential decay solved for the threshold.
+Source: https://github.com/Max179/site-20260703-reading-time-calculator
+Live: https://Max179.github.io/site-20260703-reading-time-calculator
 
-Live: https://Max179.github.io/site-20260703-caffeine-half-life-calculator
-
-What single-purpose tools do you wish existed? Trying to collect pain points for the next few days.
-
----
-
-## 4. Hacker News (Show HN)
-
-**Title:** Show HN: Caffeine Half-Life Calculator – when can you sleep after coffee
-
-**Body:**
-
-Hi HN, I built a small tool that answers a question I kept googling poorly: if I drink X mg of caffeine at time Y, when is it safe to sleep?
-
-It uses caffeine's exponential decay (average 5h half-life, adjustable for smokers ~3h or oral contraceptives ~7-10h) and solves C(t) = C0 * (0.5)^(t/halfLife) for the sleep-safe threshold (~25mg). You pick a drink or enter a custom mg amount, set the time you finished, and it returns the earliest bedtime that shouldn't be disrupted, plus how much caffeine is still active in you right now.
-
-Nothing fancy - static HTML/JS on GitHub Pages, no tracking beyond GA, no signup. The interesting bit is that the common "no coffee after 2pm" heuristic is wildly off for a 200mg pre-workout vs a 30mg green tea, and most people don't realize caffeine's half-life varies ~3x between individuals.
-
-https://Max179.github.io/site-20260703-caffeine-half-life-calculator
-
-Source: https://github.com/Max179/site-20260703-caffeine-half-life-calculator
-
-Feedback welcome, especially on the threshold default (25mg) and whether to add a "wake up at" reverse mode.
+Curious what the HN community thinks — both about the tool and the one-site-per-day approach.
