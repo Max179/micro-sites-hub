@@ -115,10 +115,13 @@ site-20260703-caffeine-half-life-calculator/
 ### 图表扩展能力(按需启用)
 
 默认 3 种模板都是**纯 HTML + 原生 JS**,无构建步骤,直接部署 GitHub Pages。
-当站点的痛点本身需要数据可视化时(如趋势对比、占比分布、多维数据),应引入
-**bklit-ui** 图表组件库升级该站为 React 项目。判断与升级规范见 **附录 A**。
+当站点的痛点本身需要数据可视化时(如趋势对比、占比分布、多维数据),应升级该站为 React 项目,并强制遵循以下 UI 规范:
 
-> 当前默认模板不内置 bklit-ui,仅在任务识别到图表需求时按附录 A 升级该站。
+- **图表组件**: 必须使用 bklit-ui(见附录 A)
+- **其他所有 UI 组件**: 必须使用 HeroUI(见附录 B)
+- **禁止混用**: 不允许引入 MUI / Chakra / shadcn / Mantine 等其他 React UI 库
+
+> 当前默认模板不内置 React 依赖,仅在任务识别到图表需求时按附录 A/B 升级该站。
 
 ### 配置文件 `config.json`
 
@@ -160,14 +163,15 @@ site-20260703-caffeine-half-life-calculator/
   └─ 判断类型(tool / info / calculator)
      从 hub 仓库 get_file_contents 读取模板
      替换所有 {{PLACEHOLDER}} 占位符
-     如痛点标记为“需要图表”,按附录 A 升级为 React 项目
+     如痛点标记为“需要图表”,按附录 A + B 升级为 React 项目
 
 第 3 步: 部署到 GitHub Pages
   ├─ create_repository 创建新仓库 site-YYYYMMDD-{slug}
-  ├─ push_files 推送 index.html + shared/* + sitemap.xml + robots.txt
-  │  (若为 React 项目,额外推送 src/、package.json、vite.config.ts、
-  │   .github/workflows/deploy.yml 详见附录 A)
-  ├─ 调用 GitHub Pages API 自动开启 Pages (POST /repos/{owner}/{repo}/pages)
+  ├─ push_files 推送文件
+  │  (纯 HTML: index.html + shared/* + sitemap.xml + robots.txt)
+  │  (React 项目: src/、package.json、vite.config.ts、
+  │   .github/workflows/deploy.yml 详见附录 B)
+  ├─ 调用 GitHub Pages API 自动开启 Pages
   │  (React 项目改用 source: GitHub Actions)
   └─ WebFetch 验证 URL 可访问(允许 Pages 生效延迟)
 
@@ -266,6 +270,7 @@ site-20260703-caffeine-half-life-calculator/
 | 模板读取失败 | hub 仓库结构变动 | 检查 `templates/{type}/index.html` 路径是否正确 |
 | 推广文案未生成 | 第 4 步出错 | 查看任务执行记录,手动补写 |
 | React 站点 Pages 构建失败 | workflow 文件错误 | 检查 `.github/workflows/deploy.yml`,确认 Node 版本与 build 脚本 |
+| React 项目依赖冲突 | 引入了非 heroui/bklit-ui 的 UI 库 | 检查 package.json,仅保留 @heroui/* 与 bklit-ui 相关依赖 |
 
 ## 七、原则与边界
 
@@ -276,6 +281,7 @@ site-20260703-caffeine-half-life-calculator/
 3. **执行到成功为止** — 遇到错误先排查修复,不中途放弃
 4. **幂等性** — 当日已成功则跳过,不重复执行
 5. **数据可追溯** — 所有变更通过 git commit 记录,可版本回溯
+6. **UI 统一规范** — React 项目的 UI 组件只能用 HeroUI,图表只能用 bklit-ui,禁止混用其他库
 
 ### 不做的事
 
@@ -283,6 +289,7 @@ site-20260703-caffeine-half-life-calculator/
 - ❌ 自动获取 GA 数据(只生成检查清单,需人工登录查看)
 - ❌ 自动提交搜索引擎收录(需人工到 Search Console 操作)
 - ❌ 编造数据(复盘报告只列指标项,不填假数据)
+- ❌ 在 React 项目中引入 MUI / Chakra / shadcn / Mantine 等其他 UI 库
 
 ## 八、当前状态
 
@@ -295,6 +302,7 @@ site-20260703-caffeine-half-life-calculator/
   - `site-20260703-caffeine-half-life-calculator` ✅ 已上线
   - `site-20260703-reading-time-calculator` ✅ 已上线
 - [x] bklit-ui 图表使用规范已写入附录 A(待痛点需要时启用)
+- [x] HeroUI UI 组件规范已写入附录 B(强制约束)
 
 ### 待办
 
@@ -302,7 +310,7 @@ site-20260703-caffeine-half-life-calculator/
 - [ ] 填入实际 AdSense ID 到 `templates/shared/config.json`(流量达标后)
 - [ ] 提交站点到 Google Search Console 收录
 - [ ] 发布每日推广文案到对应社区
-- [ ] (可选)首次痛点需要图表时,按附录 A 升级站点为 React 项目
+- [ ] (可选)首次痛点需要图表时,按附录 A + B 升级站点为 React 项目
 
 ---
 
@@ -355,61 +363,15 @@ site-20260703-caffeine-half-life-calculator/
 
 当第 1 步识别痛点需要图表时,第 2 步按以下流程升级:
 
-1. **项目脚手架**: 新建 React + Vite + TypeScript 项目结构
-   ```
-   site-YYYYMMDD-{slug}/
-   ├── src/
-   │   ├── App.tsx
-   │   ├── main.tsx
-   │   └── components/ui/      # bklit-ui 组件源码(shadcn 拉取)
-   ├── public/
-   │   └── shared/             # 复用 hub 的 shared 基建
-   ├── package.json
-   ├── vite.config.ts
-   ├── tsconfig.json
-   ├── .github/workflows/deploy.yml
-   └── README.md
-   ```
-
+1. **项目脚手架**: 新建 React + Vite + TypeScript 项目结构(详见附录 B 第 B.4 节)
 2. **拉取图表组件**: 通过 shadcn CLI 拉取需要的图表组件源码
    ```bash
    npx shadcn@latest add https://ui.bklit.com/r/{chart-name}.json
    ```
    源码会写入 `src/components/ui/{chart-name}.tsx`,直接打包进生产 bundle,无需外部 CDN。
-
-3. **GitHub Actions 自动构建**: 推送 `.github/workflows/deploy.yml`
-   ```yaml
-   name: Deploy to GitHub Pages
-   on:
-     push:
-       branches: [main]
-   permissions:
-     contents: read
-     pages: write
-     id-token: write
-   jobs:
-     build:
-       runs-on: ubuntu-latest
-       steps:
-         - uses: actions/checkout@v4
-         - uses: actions/setup-node@v4
-           with: { node-version: 20, cache: npm }
-         - run: npm ci
-         - run: npm run build
-         - uses: actions/upload-pages-artifact@v3
-           with: { path: ./dist }
-     deploy:
-       needs: build
-       runs-on: ubuntu-latest
-       environment:
-         name: github-pages
-         url: ${{ steps.deployment.outputs.page_url }}
-       steps:
-         - id: deployment
-           uses: actions/deploy-pages@v4
-   ```
-
-4. **开启 Pages(source 改为 GitHub Actions)**:
+3. **配套 UI 组件**: 表单 / 按钮 / 卡片 / 模态框等所有非图表 UI,必须从 HeroUI 拉取(见附录 B)。
+4. **GitHub Actions 自动构建**: 推送 `.github/workflows/deploy.yml`(配置见附录 B 第 B.4 节)
+5. **开启 Pages(source 改为 GitHub Actions)**:
    ```bash
    curl -X PUT \
      -H "Authorization: token $TOKEN" \
@@ -417,16 +379,15 @@ site-20260703-caffeine-half-life-calculator/
      https://api.github.com/repos/Max179/{repo}/pages \
      -d '{"build_type":"workflow"}'
    ```
-
-5. **共享基建复用**: `public/shared/` 仍放 hub 仓库的 `seo.js / analytics.js / ads.js / base.css`,在 `index.html` 模板里引用,保证 SEO/埋点/广告位三件套不变。
+6. **共享基建复用**: `public/shared/` 仍放 hub 仓库的 `seo.js / analytics.js / ads.js / base.css`,在 `index.html` 模板里引用,保证 SEO/埋点/广告位三件套不变。
 
 ### A.5 注意事项
 
 - **构建慢**: React 项目首次 Actions 构建约 2-3 分钟,比纯 HTML 慢很多
-- **Bundle 体积**: 仅拉取用到的图表组件,不要全量引入
+- **Bundle 体积**: 仅拉取用到的图表组件,不要全量引入 bklit-ui
 - **数据准备**: 图表需要结构化数据,任务生成时要同时生成示例数据集(至少 10 条)
 - **SSR/SSG**: 当前用 Vite 纯 SPA,GitHub Actions 构建后静态部署即可,无需 Next.js
-- **主题一致性**: bklit-ui 用 CSS 变量主题,与 hub 的 `base.css` 暗色模式协调
+- **主题一致性**: bklit-ui 用 CSS 变量主题,与 HeroUI 的 Tailwind v4 主题系统协调(均基于 Tailwind 4)
 
 ### A.6 决策流程图
 
@@ -440,10 +401,12 @@ site-20260703-caffeine-half-life-calculator/
    └─ 是 → 选择图表类型
             │
             ▼
-         拉取对应 bklit-ui 组件
+         升级为 React + Vite 项目
             │
             ▼
-         升级为 React + Vite 项目
+         拉取 bklit-ui 图表组件 (附录 A)
+            +
+         拉取 HeroUI UI 组件 (附录 B)
             │
             ▼
          推送代码 + GitHub Actions workflow
@@ -457,6 +420,191 @@ site-20260703-caffeine-half-life-calculator/
 
 ---
 
+## 附录 B: HeroUI UI 组件规范
+
+### B.1 强制约束
+
+**当站点升级为 React 项目时(即 needs_chart=true),所有非图表 UI 组件必须且只能使用 HeroUI。**
+
+| 允许 | 用途 |
+|------|------|
+| ✅ `@heroui/react` 及子包 | 所有通用 UI(Button / Card / Modal / Select / Table / Form / Input / Nav / Toast 等) |
+| ✅ bklit-ui(见附录 A) | 仅限图表与数据可视化组件 |
+| ❌ MUI / Material UI | 禁止使用 |
+| ❌ Chakra UI | 禁止使用 |
+| ❌ shadcn/ui(非 bklit-ui registry 部分) | 禁止使用 |
+| ❌ Mantine | 禁止使用 |
+| ❌ Ant Design / antd | 禁止使用 |
+| ❌ 自行手写 UI 组件 | 禁止使用(必须复用 HeroUI) |
+
+> 此约束的目的是保持设计系统统一、降低维护成本、确保 a11y 一致性。
+
+### B.2 HeroUI 简介
+
+- **仓库**: https://github.com/heroui-inc/heroui
+- **文档站**: https://heroui.com
+- **Storybook**: https://storybook-v3.heroui.com/
+- **前身**: NextUI(v3 起改名为 HeroUI)
+- **技术栈**: React 19 + React Aria + Tailwind CSS v4
+- **分发方式**: npm 包(`@heroui/react` 或按需子包 `@heroui/button`、`@heroui/modal` 等)
+- **许可**: MIT
+
+### B.3 关键特性(为什么选 HeroUI)
+
+- **Accessible by default**: 基于 React Aria,WCAG 合规的键盘/焦点/屏幕阅读器行为
+- **Tailwind v4 原生**: 无 CSS-in-JS 运行时,产物更小,构建更快
+- **Compound components**: 组合式 API(`Card.Header`、`Card.Content`、`Select.Item`),不是深度嵌套的 props
+- **零 Provider 包装**: 不需要 `<Provider>` wrapper(与 Chakra / MUI 不同)
+- **AI 原生**: 提供 MCP server 与 `llms.txt`,LLM 可精准理解组件用法
+- **生产级**: 深度用户使用,稳定可靠
+
+### B.4 React 项目集成步骤(任务执行时)
+
+#### B.4.1 项目脚手架
+
+```
+site-YYYYMMDD-{slug}/
+├── src/
+│   ├── App.tsx                  # 主组件(用 HeroUI 布局 + bklit-ui 图表)
+│   ├── main.tsx                 # 入口
+│   ├── components/
+│   │   └── ui/                  # bklit-ui 图表组件源码(shadcn 拉取)
+│   │       └── {chart-name}.tsx
+│   ├── styles/
+│   │   └── globals.css          # Tailwind v4 入口 + HeroUI 主题变量
+│   └── data/
+│       └── sample-data.ts       # 图表示例数据集(至少 10 条)
+├── public/
+│   └── shared/                 # 复用 hub 的 shared 基建(seo.js / analytics.js / ads.js / base.css / config.json)
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── tailwind.config.ts           # 仅扩展 HeroUI 主题,不自定义绕过 HeroUI
+├── postcss.config.js
+├── .github/workflows/deploy.yml
+└── README.md
+```
+
+#### B.4.2 依赖配置 `package.json`
+
+```json
+{
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@heroui/react": "latest",
+    "framer-motion": "latest",
+    "tailwindcss": "^4.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "latest",
+    "typescript": "^5.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "latest",
+    "postcss": "latest"
+  }
+}
+```
+
+> ⚠️ 严禁在 dependencies 中出现 `@mui/*`、`@chakra-ui/*`、`@mantine/*`、`antd` 等其他 UI 库。
+
+#### B.4.3 全局样式 `src/styles/globals.css`
+
+```css
+@import "tailwindcss";
+@import "@heroui/react/styles";
+
+/* 复用 hub 的暗色模式与基础变量 */
+:root {
+  --color-primary: #2563eb;
+  --color-bg: #f7f8fa;
+}
+```
+
+#### B.4.4 主组件示例 `src/App.tsx`
+
+```tsx
+import {Button, Card, CardHeader, CardBody, Input, Select, SelectItem}
+  from '@heroui/react';
+import {BarChart} from './components/ui/bar-chart';  // bklit-ui 拉取
+import {sampleData} from './data/sample-data';
+
+export default function App() {
+  return (
+    <div className="min-h-screen bg-[var(--color-bg)]">
+      <Card className="max-w-2xl mx-auto mt-8">
+        <CardHeader>站点标题</CardHeader>
+        <CardBody>
+          <BarChart data={sampleData} />
+          <Button color="primary">操作</Button>
+        </CardBody>
+      </Card>
+    </div>
+  );
+}
+```
+
+#### B.4.5 GitHub Actions `.github/workflows/deploy.yml`
+
+```yaml
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+### B.5 组件选用清单(参考)
+
+根据站点类型推荐组合:
+
+| 场景 | 推荐 HeroUI 组件 | 配套 bklit-ui 图表 |
+|------|------------------|-------------------|
+| 数据仪表盘 | Card / Table / Tabs / Chip | Line / Area / Bar |
+| 财务计算器 | Input / Select / Button / Modal | Pie / Ring(占比展示) |
+| 资讯站升级 | Card / Chip / Tabs / Skeleton | Bar / Funnel(分类对比) |
+| 进度追踪 | Progress / CircularProgress / Badge | Gauge / Ring |
+| 多维对比 | Table / Modal / Accordion | Radar / Composed |
+
+完整组件列表见 https://heroui.com/docs/components
+
+### B.6 主题与样式约束
+
+- **禁止绕过 HeroUI 自行手写组件样式**:如需定制,通过 HeroUI 的 theme / class variants 扩展
+- **暗色模式**:沿用 HeroUI 的 `dark` class 机制,与 hub `base.css` 协调
+- **CSS 变量**:全局 CSS 变量保留在 `src/styles/globals.css`,供 HeroUI 与 bklit-ui 共享
+- **响应式**:必须用 Tailwind v4 的 `sm:` / `md:` / `lg:` 断点,不要自写媒体查询
+
+---
+
 **最后更新**: 2026-07-03  
-**文档版本**: v1.1 (新增附录 A: bklit-ui 图表使用规范)  
+**文档版本**: v1.2 (新增附录 B: HeroUI 强制 UI 规范)  
 **维护者**: 自动化任务 + 用户手动跟进
