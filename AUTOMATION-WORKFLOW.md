@@ -112,6 +112,14 @@ site-20260703-caffeine-half-life-calculator/
 - **埋点**: `analytics.js` 预置 GA4,自动追踪 `[data-track]` 属性的按钮点击
 - **广告位**: `ads.js` 预留 3 个标准位置(header / incontent / sidebar),初期隐藏,流量达标后改 `config.json` 一键开启
 
+### 图表扩展能力(按需启用)
+
+默认 3 种模板都是**纯 HTML + 原生 JS**,无构建步骤,直接部署 GitHub Pages。
+当站点的痛点本身需要数据可视化时(如趋势对比、占比分布、多维数据),应引入
+**bklit-ui** 图表组件库升级该站为 React 项目。判断与升级规范见 **附录 A**。
+
+> 当前默认模板不内置 bklit-ui,仅在任务识别到图表需求时按附录 A 升级该站。
+
 ### 配置文件 `config.json`
 
 ```json
@@ -146,16 +154,21 @@ site-20260703-caffeine-half-life-calculator/
 第 1 步: 挖掘痛点
   └─ WebSearch 扫描 Reddit / Product Hunt / X
      筛选标准: 单点问题 / 可快速解决 / 有搜索量 / 无强势竞品
+     记录痛点描述、目标用户、关键词,并标记是否需要图表(见附录 A)
 
 第 2 步: 选模板 + 填内容
   └─ 判断类型(tool / info / calculator)
      从 hub 仓库 get_file_contents 读取模板
      替换所有 {{PLACEHOLDER}} 占位符
+     如痛点标记为“需要图表”,按附录 A 升级为 React 项目
 
 第 3 步: 部署到 GitHub Pages
   ├─ create_repository 创建新仓库 site-YYYYMMDD-{slug}
   ├─ push_files 推送 index.html + shared/* + sitemap.xml + robots.txt
+  │  (若为 React 项目,额外推送 src/、package.json、vite.config.ts、
+  │   .github/workflows/deploy.yml 详见附录 A)
   ├─ 调用 GitHub Pages API 自动开启 Pages (POST /repos/{owner}/{repo}/pages)
+  │  (React 项目改用 source: GitHub Actions)
   └─ WebFetch 验证 URL 可访问(允许 Pages 生效延迟)
 
 第 4 步: 生成推广文案
@@ -252,6 +265,7 @@ site-20260703-caffeine-half-life-calculator/
 | Pages 404 | 构建未完成 | 等 1-2 分钟,或手动触发 `POST /repos/{owner}/{repo}/pages/builds` |
 | 模板读取失败 | hub 仓库结构变动 | 检查 `templates/{type}/index.html` 路径是否正确 |
 | 推广文案未生成 | 第 4 步出错 | 查看任务执行记录,手动补写 |
+| React 站点 Pages 构建失败 | workflow 文件错误 | 检查 `.github/workflows/deploy.yml`,确认 Node 版本与 build 脚本 |
 
 ## 七、原则与边界
 
@@ -280,6 +294,7 @@ site-20260703-caffeine-half-life-calculator/
 - [x] 首次执行已产出 2 个站点:
   - `site-20260703-caffeine-half-life-calculator` ✅ 已上线
   - `site-20260703-reading-time-calculator` ✅ 已上线
+- [x] bklit-ui 图表使用规范已写入附录 A(待痛点需要时启用)
 
 ### 待办
 
@@ -287,9 +302,161 @@ site-20260703-caffeine-half-life-calculator/
 - [ ] 填入实际 AdSense ID 到 `templates/shared/config.json`(流量达标后)
 - [ ] 提交站点到 Google Search Console 收录
 - [ ] 发布每日推广文案到对应社区
+- [ ] (可选)首次痛点需要图表时,按附录 A 升级站点为 React 项目
+
+---
+
+## 附录 A: bklit-ui 图表使用规范
+
+### A.1 何时启用
+
+当痛点本身需要**数据可视化**才能解决时启用。判断标准:
+
+| 触发场景 | 示例痛点 | 是否启用 |
+|---------|---------|----------|
+| 需要展示时间趋势 | “加密货币价格走势可视化”、“用户增长曲线展示” | ✅ 启用(Line / Area / Live Line) |
+| 需要展示占比分布 | “个人月度支出分类占比”、“设备市场份额分布” | ✅ 启用(Pie / Ring / Funnel) |
+| 需要多维数据对比 | “技能雷达图生成”、“各维度性能对比” | ✅ 启用(Radar / Bar) |
+| 需要地理区域数据 | “各国 GDP 对比可视化”、“区域销售热度图” | ✅ 启用(Choropleth) |
+| 需要流程/流量分析 | “用户漏斗转化分析”、“能源流向分析” | ✅ 启用(Funnel / Sankey) |
+| 需要进度/指标显示 | “年度目标完成率仪表盘” | ✅ 启用(Gauge / Ring) |
+| 纯交互工具(无需图表) | “咖啡因半衰期计算”、“阅读时间估算” | ❌ 走纯 HTML 模板,不启用 |
+| 纯信息汇总(无需图表) | “最佳咖啡豆品牌推荐” | ❌ 走纯 HTML 模板,不启用 |
+
+> 决策原则:能不升级就不升级。纯 HTML 能表达的绝不引入 React。
+
+### A.2 bklit-ui 简介
+
+- **仓库**: https://github.com/bklit/bklit-ui
+- **文档站**: https://ui.bklit.com
+- **技术栈**: React + Visx + Motion + Tailwind 4
+- **分发方式**: shadcn registry (`ui.bklit.com/r/*.json`)
+- **许可**: 开源(见仓库 LICENSE)
+
+### A.3 可用图表类型
+
+| 图表 | 适用场景 | registry URL |
+|------|---------|--------------|
+| `area-chart` | 时间序列趋势(带填充) | `ui.bklit.com/r/area-chart.json` |
+| `bar-chart` | 分类对比、堆叠、横向 | `ui.bklit.com/r/bar-chart.json` |
+| `line-chart` | 时间序列趋势(折线) | `ui.bklit.com/r/line-chart.json` |
+| `live-line-chart` | 实时流数据(股票/监控) | `ui.bklit.com/r/live-line-chart.json` |
+| `pie-chart` | 占比分布(饼图/环图) | `ui.bklit.com/r/pie-chart.json` |
+| `ring-chart` | 多环进度对比 | `ui.bklit.com/r/ring-chart.json` |
+| `radar-chart` | 多维能力对比 | `ui.bklit.com/r/radar-chart.json` |
+| `gauge-chart` | 单值进度仪表 | `ui.bklit.com/r/gauge-chart.json` |
+| `funnel-chart` | 漏斗转化分析 | `ui.bklit.com/r/funnel-chart.json` |
+| `sankey-chart` | 流量/能源流向 | `ui.bklit.com/r/sankey-chart.json` |
+| `candlestick-chart` | OHLC 蜡烛图 | `ui.bklit.com/r/candlestick-chart.json` |
+| `choropleth-chart` | 地理区域数据 | `ui.bklit.com/r/choropleth-chart.json` |
+| `composed-chart` | 多系列混合(柱+线+面积) | `ui.bklit.com/r/composed-chart.json` |
+
+### A.4 升级步骤(任务执行时)
+
+当第 1 步识别痛点需要图表时,第 2 步按以下流程升级:
+
+1. **项目脚手架**: 新建 React + Vite + TypeScript 项目结构
+   ```
+   site-YYYYMMDD-{slug}/
+   ├── src/
+   │   ├── App.tsx
+   │   ├── main.tsx
+   │   └── components/ui/      # bklit-ui 组件源码(shadcn 拉取)
+   ├── public/
+   │   └── shared/             # 复用 hub 的 shared 基建
+   ├── package.json
+   ├── vite.config.ts
+   ├── tsconfig.json
+   ├── .github/workflows/deploy.yml
+   └── README.md
+   ```
+
+2. **拉取图表组件**: 通过 shadcn CLI 拉取需要的图表组件源码
+   ```bash
+   npx shadcn@latest add https://ui.bklit.com/r/{chart-name}.json
+   ```
+   源码会写入 `src/components/ui/{chart-name}.tsx`,直接打包进生产 bundle,无需外部 CDN。
+
+3. **GitHub Actions 自动构建**: 推送 `.github/workflows/deploy.yml`
+   ```yaml
+   name: Deploy to GitHub Pages
+   on:
+     push:
+       branches: [main]
+   permissions:
+     contents: read
+     pages: write
+     id-token: write
+   jobs:
+     build:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v4
+         - uses: actions/setup-node@v4
+           with: { node-version: 20, cache: npm }
+         - run: npm ci
+         - run: npm run build
+         - uses: actions/upload-pages-artifact@v3
+           with: { path: ./dist }
+     deploy:
+       needs: build
+       runs-on: ubuntu-latest
+       environment:
+         name: github-pages
+         url: ${{ steps.deployment.outputs.page_url }}
+       steps:
+         - id: deployment
+           uses: actions/deploy-pages@v4
+   ```
+
+4. **开启 Pages(source 改为 GitHub Actions)**:
+   ```bash
+   curl -X PUT \
+     -H "Authorization: token $TOKEN" \
+     -H "Accept: application/vnd.github+json" \
+     https://api.github.com/repos/Max179/{repo}/pages \
+     -d '{"build_type":"workflow"}'
+   ```
+
+5. **共享基建复用**: `public/shared/` 仍放 hub 仓库的 `seo.js / analytics.js / ads.js / base.css`,在 `index.html` 模板里引用,保证 SEO/埋点/广告位三件套不变。
+
+### A.5 注意事项
+
+- **构建慢**: React 项目首次 Actions 构建约 2-3 分钟,比纯 HTML 慢很多
+- **Bundle 体积**: 仅拉取用到的图表组件,不要全量引入
+- **数据准备**: 图表需要结构化数据,任务生成时要同时生成示例数据集(至少 10 条)
+- **SSR/SSG**: 当前用 Vite 纯 SPA,GitHub Actions 构建后静态部署即可,无需 Next.js
+- **主题一致性**: bklit-ui 用 CSS 变量主题,与 hub 的 `base.css` 暗色模式协调
+
+### A.6 决策流程图
+
+```
+痛点识别
+   │
+   ▼
+是否需要数据可视化?
+   ├─ 否 → 走纯 HTML 模板 (tool/info/calculator)
+   │
+   └─ 是 → 选择图表类型
+            │
+            ▼
+         拉取对应 bklit-ui 组件
+            │
+            ▼
+         升级为 React + Vite 项目
+            │
+            ▼
+         推送代码 + GitHub Actions workflow
+            │
+            ▼
+         开启 Pages (source: GitHub Actions)
+            │
+            ▼
+         等待首次构建完成 (2-3 分钟)
+```
 
 ---
 
 **最后更新**: 2026-07-03  
-**文档版本**: v1.0  
+**文档版本**: v1.1 (新增附录 A: bklit-ui 图表使用规范)  
 **维护者**: 自动化任务 + 用户手动跟进
