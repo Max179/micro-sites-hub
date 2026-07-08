@@ -8,10 +8,15 @@
 - r/learnprogramming
 - r/SideProject
 
-### Copy:
-"Just launched a comprehensive AI tools directory for 2026! Includes over 30 hand-picked tools across 6 categories (writing, image generation, video, productivity, coding, and more). Each tool has detailed reviews, pricing info, pros/cons, and best use cases.
+### Title (long-tail question):
+"What are the best AI tools in 2026? I compared 30+ options in one directory"
 
-Perfect for anyone looking to boost productivity or explore AI capabilities without the overwhelm.
+### Copy:
+"Overwhelmed by the sheer number of AI tools out there? I was too, so I built a curated directory comparing 30+ hand-picked tools across 6 categories (image generation, writing assistants, video, productivity, coding, and more).
+
+Each tool has detailed reviews, ratings, pricing info, pros/cons, and best use cases — so you can find the right tool without hours of research.
+
+Perfect for anyone looking to boost productivity or explore AI capabilities.
 
 Check it out: https://max179.github.io/site-20260708-best-ai-tools-directory/
 
@@ -55,8 +60,8 @@ Would appreciate any feedback or tool recommendations!"
 
 ## Platform 4: X (Twitter)
 
-### Thread:
-"🧵 1/5 Looking for the best AI tools in 2026? I've got you covered. After testing 50+ tools, I curated the top ones into a comprehensive directory.
+### Thread (with long-tail hashtags):
+"🧵 1/5 What are the best AI tools in 2026? After testing 50+ tools, I curated the top ones into a comprehensive directory.
 
 2/5 The directory covers:
 ✍️ Writing & Content
@@ -76,7 +81,7 @@ Would appreciate any feedback or tool recommendations!"
 
 5/5 Check it out: https://max179.github.io/site-20260708-best-ai-tools-directory/
 
-What AI tools can't you live without? Let me know!"
+#AITools2026 #BestAITools #FreeAITools #AIImageGenerator #AIWritingAssistant #AICodingTools #AIToolsDirectory #ProductivityTools"
 
 ---
 
